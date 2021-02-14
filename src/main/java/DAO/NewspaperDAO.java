@@ -27,8 +27,8 @@ public class NewspaperDAO implements DAO<Newspaper>{
                 while (rs.next()) {
                     return new Newspaper(
                             rs.getLong("id"),
-                            rs.getLong("number"),
-                            rs.getDate("date")
+                            rs.getLong("number1"),
+                            rs.getDate("date1")
                     );
                 }
             }
@@ -48,8 +48,8 @@ public class NewspaperDAO implements DAO<Newspaper>{
                 while (rs.next()) {
                     result.add(new Newspaper(
                             rs.getLong("id"),
-                            rs.getLong("number"),
-                            rs.getDate("date")));
+                            rs.getLong("number1"),
+                            rs.getDate("date1")));
                 }
             }
         } catch (SQLException e) {
@@ -62,12 +62,12 @@ public class NewspaperDAO implements DAO<Newspaper>{
     @Override
     public void save(Newspaper newspaper) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO Newspaper(id,number,date) VALUES(?,?,?)")
+                "INSERT INTO Newspaper(id,number1,date1) VALUES(?,?,?)")
         ) {
             int count = 1;
             preparedStatement.setLong(count++, newspaper.getId());
             preparedStatement.setLong(count++, newspaper.getNumber());
-            preparedStatement.setDate(count++, (java.sql.Date)newspaper.getDate());
+            preparedStatement.setDate(count++, new java.sql.Date(newspaper.getDate().getTime()));
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -77,12 +77,12 @@ public class NewspaperDAO implements DAO<Newspaper>{
     @Override
     public void update(long id, Newspaper newspaper) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE Newspaper SET number = ?, date = ? WHERE id = ?"
+                "UPDATE Newspaper SET number1 = ?, date1 = ? WHERE id = ?"
         )) {
 
             int count = 1;
             preparedStatement.setLong(count++, newspaper.getNumber());
-            preparedStatement.setDate(count++, (java.sql.Date)newspaper.getDate());
+            preparedStatement.setDate(count++, new java.sql.Date(newspaper.getDate().getTime()));
             preparedStatement.setLong(count, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -102,5 +102,43 @@ public class NewspaperDAO implements DAO<Newspaper>{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public List<Newspaper> getNewspapersInWarehouse() {
+        final List<Newspaper> result = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Newspaper where id in (Select id from product)")) {
+                while (rs.next()) {
+                    result.add(new Newspaper(
+                            rs.getLong("id"),
+                            rs.getLong("number1"),
+                            rs.getDate("date1")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
+    }
+
+    public List<Newspaper> getSoldNewspapers() {
+        final List<Newspaper> result = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Newspaper where id in (Select id from soldproduct)")) {
+                while (rs.next()) {
+                    result.add(new Newspaper(
+                            rs.getLong("id"),
+                            rs.getLong("number1"),
+                            rs.getDate("date1")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
     }
 }

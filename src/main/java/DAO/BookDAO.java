@@ -26,8 +26,8 @@ public class BookDAO implements DAO<Book> {
                 while (rs.next()) {
                     return new Book(rs.getLong("id"),
                             rs.getInt("countOfPages"),
-                            rs.getLong("author"),
-                            rs.getLong("publishing")
+                            rs.getString("author"),
+                            rs.getString("publishing")
                     );
                 }
             }
@@ -47,8 +47,8 @@ public class BookDAO implements DAO<Book> {
                 while (rs.next()) {
                     result.add(new Book(rs.getLong("id"),
                             rs.getInt("countOfPages"),
-                            rs.getLong("author"),
-                            rs.getLong("publishing")
+                            rs.getString("author"),
+                            rs.getString("publishing")
                     ));
                 }
             }
@@ -67,8 +67,8 @@ public class BookDAO implements DAO<Book> {
             int count = 1;
             preparedStatement.setLong(count++, book.getId());
             preparedStatement.setInt(count++, book.getCountOfPages());
-            preparedStatement.setLong(count++, book.getAuthorId());
-            preparedStatement.setLong(count++, book.getPublishingId());
+            preparedStatement.setString(count++, book.getAuthor());
+            preparedStatement.setString(count++, book.getPublishing());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -83,8 +83,8 @@ public class BookDAO implements DAO<Book> {
 
             int count = 1;
             preparedStatement.setInt(count++, book.getCountOfPages());
-            preparedStatement.setLong(count++, book.getAuthorId());
-            preparedStatement.setLong(count++, book.getPublishingId());
+            preparedStatement.setString(count++, book.getAuthor());
+            preparedStatement.setString(count++, book.getPublishing());
             preparedStatement.setLong(count, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -104,5 +104,45 @@ public class BookDAO implements DAO<Book> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public List<Book> getBooksInWarehouse() {
+        final List<Book> result = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Book where id in (Select id from Product)")) {
+                while (rs.next()) {
+                    result.add(new Book(rs.getLong("id"),
+                            rs.getInt("countOfPages"),
+                            rs.getString("author"),
+                            rs.getString("publishing")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
+    }
+
+    public List<Book> getSoldBooks() {
+        final List<Book> result = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Book where id in (Select id from SoldProduct)")) {
+                while (rs.next()) {
+                    result.add(new Book(rs.getLong("id"),
+                            rs.getInt("countOfPages"),
+                            rs.getString("author"),
+                            rs.getString("publishing")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
     }
 }

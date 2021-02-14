@@ -2,6 +2,7 @@ package service;
 
 import DAO.NewspaperDAO;
 import connection.Utils;
+import domain.Journal;
 import domain.Newspaper;
 
 import java.sql.Connection;
@@ -9,15 +10,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-public class NewspaperDTO {
-    private NewspaperDAO newspaperDAO;
-    private long id;
+public class NewspaperService implements Service<Newspaper>{
 
-    public NewspaperDTO() {
+    private NewspaperDAO newspaperDAO;
+
+    public NewspaperService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
             newspaperDAO = new NewspaperDAO(connection);
-            id = newspaperDAO.getAll().get(newspaperDAO.getAll().size()-1).getId();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -28,8 +28,8 @@ public class NewspaperDTO {
         ) {
             newspaperDAO.setConnection(connection);
             return newspaperDAO.getById(id);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
             return null;
         }
     }
@@ -49,7 +49,6 @@ public class NewspaperDTO {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
             newspaperDAO.setConnection(connection);
-            newspaper.setId(newspaper.getId());
             newspaperDAO.save(newspaper);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -63,6 +62,28 @@ public class NewspaperDTO {
             newspaperDAO.delete(id);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public List<Newspaper> getNewspapersInWarehouse() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            newspaperDAO.setConnection(connection);
+            return newspaperDAO.getNewspapersInWarehouse();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Newspaper> getSoldNewspapers() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            newspaperDAO.setConnection(connection);
+            return newspaperDAO.getSoldNewspapers();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
         }
     }
 }

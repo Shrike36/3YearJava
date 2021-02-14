@@ -1,63 +1,70 @@
 package service;
 
-import DAO.AuthorDAO;
+import DAO.ProductDAO;
 import connection.Utils;
-import domain.Author;
+import domain.DefaultProduct;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class AuthorDTO {
+public class ProductService implements Service<DefaultProduct>{
 
-    private AuthorDAO authorDAO;
-    private long id;
+    private ProductDAO productDAO;
 
-    public AuthorDTO() {
+    public ProductService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            authorDAO = new AuthorDAO(connection);
-            id = authorDAO.getAll().get(authorDAO.getAll().size()-1).getId();
+            productDAO = new ProductDAO(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public Author getById(long id) {
+    public DefaultProduct getById(long id) {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            authorDAO.setConnection(connection);
-            return authorDAO.getById(id);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }
-
-    public List<Author> getAll() {
-        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
-        ) {
-            authorDAO.setConnection(connection);
-            return authorDAO.getAll();
+            productDAO.setConnection(connection);
+            return productDAO.getById(id);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;
         }
     }
 
-    public void save(Author author) {
+    public DefaultProduct getByName(String name) {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            authorDAO.setConnection(connection);
-            if (author.getId() <= this.id & author.getId() != 0){
-                authorDAO.update(author.getId(), author);
-            } else if (author.getId() == 0){
-                this.id++;
-                author.setId(this.id);
-                authorDAO.save(author);
-            }
+            productDAO.setConnection(connection);
+            return productDAO.getByName(name);
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<DefaultProduct> getAll() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            productDAO.setConnection(connection);
+            return productDAO.getAll();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public void save(DefaultProduct product) {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            productDAO.setConnection(connection);
+            productDAO.save(product);
+            product.setId(productDAO.getByName(product.getName()).getId());
+        } catch (SQLException e) {
+            //productDAO.delete();
             System.out.println(e.getMessage());
         }
     }
@@ -65,11 +72,11 @@ public class AuthorDTO {
     public void delete(long id) {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            authorDAO.setConnection(connection);
-            authorDAO.delete(id);
+            productDAO.setConnection(connection);
+            productDAO.delete(id);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
 }

@@ -1,5 +1,6 @@
 package DAO;
 
+import domain.Book;
 import domain.Journal;
 import domain.Journal;
 
@@ -26,8 +27,8 @@ public class JournalDAO implements DAO<Journal> {
                 while (rs.next()) {
                     return new Journal(
                             rs.getLong("id"),
-                            rs.getLong("number"),
-                            rs.getDate("date"),
+                            rs.getLong("number1"),
+                            rs.getDate("date1"),
                             rs.getInt("countOfPages")
                     );
                 }
@@ -48,8 +49,8 @@ public class JournalDAO implements DAO<Journal> {
                 while (rs.next()) {
                     result.add(new Journal(
                             rs.getLong("id"),
-                            rs.getLong("number"),
-                            rs.getDate("date"),
+                            rs.getLong("number1"),
+                            rs.getDate("date1"),
                             rs.getInt("countOfPages")));
                 }
             }
@@ -63,12 +64,12 @@ public class JournalDAO implements DAO<Journal> {
     @Override
     public void save(Journal journal) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO Journal(id,number,date,countOfPages) VALUES(?,?,?,?)")
+                "INSERT INTO Journal(id,number1,date1,countOfPages) VALUES(?,?,?,?)")
         ) {
             int count = 1;
             preparedStatement.setLong(count++, journal.getId());
             preparedStatement.setLong(count++, journal.getNumber());
-            preparedStatement.setDate(count++, (java.sql.Date)journal.getDate());
+            preparedStatement.setDate(count++, new java.sql.Date(journal.getDate().getTime()));
             preparedStatement.setInt(count++, journal.getCountOfPages());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -79,12 +80,12 @@ public class JournalDAO implements DAO<Journal> {
     @Override
     public void update(long id, Journal journal) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE Journal SET number = ?, date = ?, countOfPages = ? WHERE id = ?"
+                "UPDATE Journal SET number1 = ?, date1 = ?, countOfPages = ? WHERE id = ?"
         )) {
 
             int count = 1;
             preparedStatement.setLong(count++, journal.getNumber());
-            preparedStatement.setDate(count++, (java.sql.Date)journal.getDate());
+            preparedStatement.setDate(count++, new java.sql.Date(journal.getDate().getTime()));
             preparedStatement.setInt(count++, journal.getCountOfPages());
             preparedStatement.setLong(count, id);
             preparedStatement.executeUpdate();
@@ -105,5 +106,45 @@ public class JournalDAO implements DAO<Journal> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public List<Journal> getJournalsInWarehouse() {
+        final List<Journal> result = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Journal where id in (Select id from product)")) {
+                while (rs.next()) {
+                    result.add(new Journal(
+                            rs.getLong("id"),
+                            rs.getLong("number1"),
+                            rs.getDate("date1"),
+                            rs.getInt("countOfPages")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
+    }
+
+    public List<Journal> getSoldJournals() {
+        final List<Journal> result = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Journal where id in (Select id from soldproduct)")) {
+                while (rs.next()) {
+                    result.add(new Journal(
+                            rs.getLong("id"),
+                            rs.getLong("number1"),
+                            rs.getDate("date1"),
+                            rs.getInt("countOfPages")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
     }
 }

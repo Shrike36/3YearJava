@@ -2,23 +2,23 @@ package service;
 
 import DAO.JournalDAO;
 import connection.Utils;
+import domain.Book;
 import domain.Journal;
+import domain.Newspaper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-public class JournalDTO {
+public class JournalService implements Service<Journal>{
 
     private JournalDAO journalDAO;
-    private long id;
 
-    public JournalDTO() {
+    public JournalService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
             journalDAO = new JournalDAO(connection);
-            id = journalDAO.getAll().get(journalDAO.getAll().size()-1).getId();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -29,8 +29,8 @@ public class JournalDTO {
         ) {
             journalDAO.setConnection(connection);
             return journalDAO.getById(id);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
             return null;
         }
     }
@@ -50,7 +50,6 @@ public class JournalDTO {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
             journalDAO.setConnection(connection);
-            journal.setId(journal.getId());
             journalDAO.save(journal);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -66,5 +65,26 @@ public class JournalDTO {
             System.out.println(e.getMessage());
         }
     }
-    
+
+    public List<Journal> getJournalsInWarehouse() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            journalDAO.setConnection(connection);
+            return journalDAO.getJournalsInWarehouse();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Journal> getSoldJournals() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            journalDAO.setConnection(connection);
+            return journalDAO.getSoldJournals();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
+        }
+    }
 }

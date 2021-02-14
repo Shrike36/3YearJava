@@ -8,6 +8,7 @@ public class DefaultProduct {
     private long id;
 
     public DefaultProduct(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 

@@ -35,7 +35,7 @@ public class SoldProductDAO implements DAO<DefaultProduct>{
             System.out.println(e.getMessage());
         }
 
-        throw new IllegalStateException("Record with id " + id + "not found");
+        throw new IllegalStateException("Record with id " + id + " not found");
     }
 
     @Override
@@ -60,9 +60,10 @@ public class SoldProductDAO implements DAO<DefaultProduct>{
     @Override
     public void save(DefaultProduct product) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO SoldProduct(name) VALUES(?,?)")
+                "INSERT INTO SoldProduct(id,name) VALUES(?,?)")
         ) {
             int count = 1;
+            preparedStatement.setLong(count++, product.getId());
             preparedStatement.setString(count++, product.getName());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -99,4 +100,19 @@ public class SoldProductDAO implements DAO<DefaultProduct>{
         }
     }
 
+    public DefaultProduct getByName(String name) {
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM SoldProduct WHERE name like '" + name + "'")) {
+                while (rs.next()) {
+                    return new DefaultProduct(rs.getLong("id"),
+                            rs.getString("name")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        throw new IllegalStateException("Record with name " + name + " not found");
+    }
 }

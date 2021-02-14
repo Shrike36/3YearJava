@@ -6,14 +6,14 @@ public class Book {
 
     private long id;
     private int countOfPages;
-    private long authorId;
-    private long publishingId;
+    private String author;
+    private String publishing;
 
-    public Book(long id, int countOfPages, long authorId, long publishingId) {
+    public Book(long id, int countOfPages, String author, String publishing) {
         this.id = id;
         this.countOfPages = countOfPages;
-        this.authorId = authorId;
-        this.publishingId = publishingId;
+        this.author = author;
+        this.publishing = publishing;
     }
 
     public long getId() {
@@ -32,19 +32,19 @@ public class Book {
         this.countOfPages = countOfPages;
     }
 
-    public long getAuthorId() {
-        return authorId;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(long authorId) {
-        this.authorId = authorId;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public long getPublishingId() {
-        return publishingId;
+    public String getPublishing() {
+        return publishing;
     }
 
-    public void setPublishingId(long publishingId) {
-        this.publishingId = publishingId;
+    public void setPublishing(String publishing) {
+        this.publishing = publishing;
     }
 }

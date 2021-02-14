@@ -3,22 +3,21 @@ package service;
 import DAO.BookDAO;
 import connection.Utils;
 import domain.Book;
+import domain.Newspaper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BookDTO {
+public class BookService implements Service<Book>{
 
     private BookDAO bookDAO;
-    private long id;
 
-    public BookDTO() {
+    public BookService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
             bookDAO = new BookDAO(connection);
-            id = bookDAO.getAll().get(bookDAO.getAll().size()-1).getId();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -29,8 +28,30 @@ public class BookDTO {
         ) {
             bookDAO.setConnection(connection);
             return bookDAO.getById(id);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Book> getBooksInWarehouse() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            bookDAO.setConnection(connection);
+            return bookDAO.getBooksInWarehouse();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Book> getSoldBooks() {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            bookDAO.setConnection(connection);
+            return bookDAO.getSoldBooks();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
             return null;
         }
     }
@@ -50,7 +71,6 @@ public class BookDTO {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
             bookDAO.setConnection(connection);
-            book.setId(book.getId());
             bookDAO.save(book);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
