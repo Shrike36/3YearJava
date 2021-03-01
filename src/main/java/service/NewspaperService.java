@@ -86,4 +86,14 @@ public class NewspaperService implements Service<Newspaper>{
             return null;
         }
     }
+
+    public void update(Newspaper newspaper) {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            newspaperDAO.setConnection(connection);
+            newspaperDAO.update(newspaper.getId(), newspaper);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

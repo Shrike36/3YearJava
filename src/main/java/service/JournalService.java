@@ -66,6 +66,17 @@ public class JournalService implements Service<Journal>{
         }
     }
 
+    @Override
+    public void update(Journal journal) {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            journalDAO.setConnection(connection);
+            journalDAO.update(journal.getId(), journal);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public List<Journal> getJournalsInWarehouse() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {

@@ -86,5 +86,16 @@ public class BookService implements Service<Book>{
             System.out.println(e.getMessage());
         }
     }
-    
+
+    @Override
+    public void update(Book book) {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            bookDAO.setConnection(connection);
+            bookDAO.update(book.getId(), book);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

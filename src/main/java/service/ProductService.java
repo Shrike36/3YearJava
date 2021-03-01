@@ -29,8 +29,8 @@ public class ProductService implements Service<DefaultProduct>{
         ) {
             productDAO.setConnection(connection);
             return productDAO.getById(id);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
             return null;
         }
     }
@@ -79,4 +79,14 @@ public class ProductService implements Service<DefaultProduct>{
         }
     }
 
+    public void update(DefaultProduct product) {
+        try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
+        ) {
+            productDAO.setConnection(connection);
+            productDAO.update(product.getId(), product);
+        } catch (SQLException e) {
+            //productDAO.delete();
+            System.out.println(e.getMessage());
+        }
+    }
 }

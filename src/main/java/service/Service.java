@@ -17,4 +17,6 @@ public interface Service<T> {
     void save(T product);
 
     void delete(long id);
+
+    void update(T product);
 }

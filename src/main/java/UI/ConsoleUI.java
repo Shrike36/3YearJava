@@ -55,7 +55,93 @@ public class ConsoleUI {
     }
 
     private static void changeProduct() {
+        System.out.println("Введите id продукта:");
+        long id = scanner.nextLong();
+        while (id < 0) {
+            System.out.println("Некорректный индекс продукта!");
+            id = scanner.nextLong();
+        }
+        try {
+            DefaultProduct product = productService.getById(id);
+            boolean isSold = false;
+            if (product == null) {
+                product = soldService.getById(id);
+                isSold = true;
+            }
+            if (product != null) {
+                Book book = bookService.getById(id);
+                Newspaper newspaper = newspaperService.getById(id);
+                Journal journal = journalService.getById(id);
+                if (book != null)
+                    changeBook(product, book, isSold);
+                else if (journal != null)
+                    changeJournal(product, journal, isSold);
+                else if (newspaper != null)
+                    changeNewspaper(product, newspaper, isSold);
+            } else {
+                System.out.println("Продукт не найден!");
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println("Ошибка!");
+        }
+    }
 
+    private static void changeNewspaper(DefaultProduct product, Newspaper newspaper, boolean isSold) {
+        System.out.printf("1) Старое название: %s, Введите новое название:\n", product.getName());
+        String name = readStr();
+        System.out.printf("1) Старый номер: %d, Введите новый номер:\n", newspaper.getNumber());
+        long number = readNum();
+        System.out.printf("3) Старая дата: %s, Введите новую дату:\n", newspaper.getDate().toString());
+        Date date = readDateFromLine(readStr());
+        product.setName(name);
+        newspaper.setNumber(number);
+        newspaper.setDate(date);
+        if (!isSold)
+            productService.update(product);
+        else
+            soldService.update(product);
+        newspaperService.update(newspaper);
+    }
+
+    private static void changeJournal(DefaultProduct product, Journal journal, boolean isSold) {
+        System.out.printf("1) Старое название: %s, Введите новое название:\n", product.getName());
+        String name = readStr();
+        System.out.printf("1) Старый номер: %d, Введите новый номер:\n", journal.getNumber());
+        long number = readNum();
+        System.out.printf("3) Старая дата: %s, Введите новую дату:\n", journal.getDate().toString());
+        Date date = readDateFromLine(readStr());
+        System.out.printf("4) Старое количество страниц: %d, Введите новое количество:\n", journal.getCountOfPages());
+        int countOfPages = readNum();
+        product.setName(name);
+        journal.setNumber(number);
+        journal.setDate(date);
+        journal.setCountOfPages(countOfPages);
+        if (!isSold)
+            productService.update(product);
+        else
+            soldService.update(product);
+        journalService.update(journal);
+    }
+
+    private static void changeBook(DefaultProduct product, Book book, boolean isSold) {
+        System.out.printf("1) Старое название: %s, Введите новое название:\n", product.getName());
+        String name = readStr();
+        System.out.printf("4) Старое количество страниц: %d, Введите новое количество:\n", book.getCountOfPages());
+        int countOfPages = readNum();
+        System.out.printf("3) Старый автор: %s, Введите нового автора:\n", book.getAuthor());
+        String author = readStr();
+        System.out.printf("4) Старое издательство: %s, Введите новое издательство:\n", book.getPublishing());
+        String publishing = readStr();
+        product.setName(name);
+        book.setCountOfPages(countOfPages);
+        book.setAuthor(author);
+        book.setPublishing(publishing);
+        if (!isSold)
+            productService.update(product);
+        else
+            soldService.update(product);
+        bookService.update(book);
     }
 
     private static void saleProduct() {
@@ -63,7 +149,7 @@ public class ConsoleUI {
         long id = scanner.nextLong();
         while (id < 0) {
             System.out.println("Некорректный индекс продукта!");
-            //id = scanner.nextLong();
+            id = scanner.nextLong();
         }
         try {
             soldService.save(productService.getById(id));
