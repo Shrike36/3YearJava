@@ -19,7 +19,7 @@ public class SoldProductDAO implements DAO<DefaultProduct>{
         return instance;
     }
 
-    public SoldProductDAO(Connection connection) {
+    private SoldProductDAO(Connection connection) {
         this.connection = connection;
     }
 

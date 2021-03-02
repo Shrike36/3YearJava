@@ -20,7 +20,7 @@ public class BookDAO implements DAO<Book> {
         return instance;
     }
 
-    public BookDAO(Connection connection) {
+    private BookDAO(Connection connection) {
         this.connection = connection;
     }
 

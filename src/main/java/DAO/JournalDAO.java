@@ -21,7 +21,7 @@ public class JournalDAO implements DAO<Journal> {
         return instance;
     }
 
-    public JournalDAO(Connection connection) {
+    private JournalDAO(Connection connection) {
         this.connection = connection;
     }
 

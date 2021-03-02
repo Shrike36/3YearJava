@@ -21,7 +21,7 @@ public class NewspaperDAO implements DAO<Newspaper>{
         return instance;
     }
 
-    public NewspaperDAO(Connection connection) {
+    private NewspaperDAO(Connection connection) {
         this.connection = connection;
     }
 

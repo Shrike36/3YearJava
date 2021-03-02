@@ -1,6 +1,5 @@
 package service;
 
-import DAO.ProductDAO;
 import DAO.SoldProductDAO;
 import connection.Utils;
 import domain.DefaultProduct;
