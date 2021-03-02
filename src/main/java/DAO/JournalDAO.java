@@ -12,6 +12,15 @@ public class JournalDAO implements DAO<Journal> {
 
     private Connection connection;
 
+    private static JournalDAO instance;
+
+    public static synchronized JournalDAO getInstance(Connection connection) {
+        if (instance == null) {
+            instance = new JournalDAO(connection);
+        }
+        return instance;
+    }
+
     public JournalDAO(Connection connection) {
         this.connection = connection;
     }

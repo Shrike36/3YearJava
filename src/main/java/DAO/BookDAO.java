@@ -11,6 +11,15 @@ public class BookDAO implements DAO<Book> {
 
     private Connection connection;
 
+    private static BookDAO instance;
+
+    public static synchronized BookDAO getInstance(Connection connection) {
+        if (instance == null) {
+            instance = new BookDAO(connection);
+        }
+        return instance;
+    }
+
     public BookDAO(Connection connection) {
         this.connection = connection;
     }

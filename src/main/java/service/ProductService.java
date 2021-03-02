@@ -18,7 +18,7 @@ public class ProductService implements Service<DefaultProduct>{
     public ProductService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            productDAO = new ProductDAO(connection);
+            productDAO = ProductDAO.getInstance(connection);//new ProductDAO(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

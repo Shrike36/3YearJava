@@ -17,7 +17,7 @@ public class NewspaperService implements Service<Newspaper>{
     public NewspaperService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            newspaperDAO = new NewspaperDAO(connection);
+            newspaperDAO = NewspaperDAO.getInstance(connection);//new NewspaperDAO(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

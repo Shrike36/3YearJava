@@ -17,7 +17,7 @@ public class SoldProductService implements Service<DefaultProduct>{
     public SoldProductService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            productDAO = new SoldProductDAO(connection);
+            productDAO = SoldProductDAO.getInstance(connection);//new SoldProductDAO(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

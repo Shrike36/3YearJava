@@ -17,7 +17,7 @@ public class BookService implements Service<Book>{
     public BookService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            bookDAO = new BookDAO(connection);
+            bookDAO = BookDAO.getInstance(connection);//new BookDAO(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

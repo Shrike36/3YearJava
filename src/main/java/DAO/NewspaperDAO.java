@@ -12,6 +12,15 @@ public class NewspaperDAO implements DAO<Newspaper>{
 
     private Connection connection;
 
+    private static NewspaperDAO instance;
+
+    public static synchronized NewspaperDAO getInstance(Connection connection) {
+        if (instance == null) {
+            instance = new NewspaperDAO(connection);
+        }
+        return instance;
+    }
+
     public NewspaperDAO(Connection connection) {
         this.connection = connection;
     }

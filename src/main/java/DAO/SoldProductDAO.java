@@ -10,6 +10,15 @@ public class SoldProductDAO implements DAO<DefaultProduct>{
 
     private Connection connection;
 
+    private static SoldProductDAO instance;
+
+    public static synchronized SoldProductDAO getInstance(Connection connection) {
+        if (instance == null) {
+            instance = new SoldProductDAO(connection);
+        }
+        return instance;
+    }
+
     public SoldProductDAO(Connection connection) {
         this.connection = connection;
     }

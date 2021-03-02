@@ -18,7 +18,7 @@ public class JournalService implements Service<Journal>{
     public JournalService() {
         try (Connection connection = DriverManager.getConnection(Utils.URL, Utils.USER, Utils.PASSWORD)
         ) {
-            journalDAO = new JournalDAO(connection);
+            journalDAO = JournalDAO.getInstance(connection);//new JournalDAO(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
